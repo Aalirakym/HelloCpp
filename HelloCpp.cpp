@@ -30,6 +30,29 @@ int main()
 
     playerHealth = playerHealth - damage;
 
+    if (playerHealth <= 0)
+    {
+        playerHealth = 0;
+        std::cout << "\nStatus: Dead\n";
+    }
+    else if (playerHealth <= 25)
+    {
+        std::cout << "\nStatus: Critical\n";
+    }
+    else
+    {
+        std::cout << "\nStatus: Alive\n";
+    }
+
+    if (playerMana >= 20)
+    {
+        std::cout << "\nMagic: Spell ready\n";
+    }
+    else
+    {
+        std::cout << "\nMagic: Not enough mana!\n";
+    }
+
     std::cout << "\n === Character Profile === \n";
     std::cout <<" Name: " << playerName << '\n';
     std::cout << " Level: " << playerLevel << '\n';
