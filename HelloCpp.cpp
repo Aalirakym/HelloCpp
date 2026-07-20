@@ -78,7 +78,6 @@ int main()
         round = round + 1;
     }
 
-    
     std::cout << "\n === Character Profile === \n";
     std::cout <<" Name: " << playerName << '\n';
     std::cout << " Level: " << playerLevel << '\n';
