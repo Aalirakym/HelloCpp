@@ -1,6 +1,54 @@
 ﻿#include <iostream>
 #include <string>
 
+void ShowStatus(int health)
+{
+    if (health <= 0)
+    {
+        std::cout << "Status: Dead\n";
+    }
+    else if (health <= 25)
+    {
+        std::cout << "Status: Critical\n";
+    }
+    else
+    {
+        std::cout << "Status: Alive\n";
+    }
+}
+
+int ApplyDamage(int health, int damage)
+{
+    health = health - damage;
+    
+    if (health < 0)
+    {
+        health = 0;
+    }
+
+    return health;
+}
+
+bool CanCastSpell(int mana, int spellCost)
+{
+    return mana >= spellCost;
+}
+
+void ShowProfile(
+    std::string name,
+    int level,
+    int health,
+    int mana,
+    int gold)
+{
+    std::cout << "\n=== Character Profile ===\n";
+    std::cout << "Name: " << name << "\n";
+    std::cout << "Level: " << level << "\n";
+    std::cout << "Health: " << health << "\n";
+    std::cout << "Mana: " << mana << "\n";
+    std::cout << "Gold: " << gold << "\n";
+}
+
 int main()
 {
     std::string playerName;
@@ -26,7 +74,9 @@ int main()
     std::cout << "Enter player gold: ";
     std::cin >> playerGold;
 
-    if (playerMana >= 20)
+    int spellCost = 20;
+
+    if (CanCastSpell(playerMana, spellCost))
     {
         std::cout << "\nMagic: Spell ready\n";
     }
@@ -57,33 +107,22 @@ int main()
             std::cin >> damage;
         }
 
-        playerHealth = playerHealth - damage;
+        playerHealth = ApplyDamage(playerHealth, damage);
 
-        if (playerHealth <= 0)
-        {
-            playerHealth = 0;
-            std::cout << "\nStatus: Dead\n";
-        }
-        else if (playerHealth <= 25)
-        {
-            std::cout << "\nStatus: Critical\n";
-        }
-        else
-        {
-            std::cout << "\nStatus: Alive\n";
-        }
+        ShowStatus(playerHealth);
         
         std::cout << "Current health: " << playerHealth << "\n";
 
-        round = round + 1;
+        round++;
     }
 
-    std::cout << "\n === Character Profile === \n";
-    std::cout <<" Name: " << playerName << '\n';
-    std::cout << " Level: " << playerLevel << '\n';
-    std::cout << " Mana: " << playerMana << '\n';
-    std::cout << " Gold: " << playerGold << '\n';
-    std::cout << " Health after damage: " << playerHealth << '\n';
+    ShowProfile(
+        playerName,
+        playerLevel,
+        playerHealth,
+        playerMana,
+        playerGold
+    );
 
     return 0;
 }
