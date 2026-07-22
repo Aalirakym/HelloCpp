@@ -1,32 +1,39 @@
 ﻿#include <iostream>
 #include <string>
 
-void ShowStatus(int health)
+struct Character
 {
-    if (health <= 0)
+    std::string name;
+    int level = 0;
+    int health = 0;
+    int mana = 0;
+    int gold = 0;
+};
+
+void ShowStatus(const Character& character)
+{
+    if (character.health <= 0)
     {
-        std::cout << "Status: Dead\n";
+        std::cout <<character.name << " Status: Dead\n";
     }
-    else if (health <= 25)
+    else if (character.health <= 25)
     {
-        std::cout << "Status: Critical\n";
+        std::cout << character.name << " Status: Critical\n";
     }
     else
     {
-        std::cout << "Status: Alive\n";
+        std::cout << character.name << " Status: Alive\n";
     }
 }
 
-int ApplyDamage(int health, int damage)
+void ApplyDamage(Character& character, int damage)
 {
-    health = health - damage;
+    character.health = character.health - damage;
     
-    if (health < 0)
+    if (character.health < 0)
     {
-        health = 0;
+        character.health = 0;
     }
-
-    return health;
 }
 
 bool CanCastSpell(int mana, int spellCost)
@@ -34,49 +41,54 @@ bool CanCastSpell(int mana, int spellCost)
     return mana >= spellCost;
 }
 
-void ShowProfile(
-    std::string name,
-    int level,
-    int health,
-    int mana,
-    int gold)
+void ShowProfile(const Character& character)
 {
     std::cout << "\n=== Character Profile ===\n";
-    std::cout << "Name: " << name << "\n";
-    std::cout << "Level: " << level << "\n";
-    std::cout << "Health: " << health << "\n";
-    std::cout << "Mana: " << mana << "\n";
-    std::cout << "Gold: " << gold << "\n";
+    std::cout << "Name: " << character.name << "\n";
+    std::cout << "Level: " << character.level << "\n";
+    std::cout << "Health: " << character.health << "\n";
+    std::cout << "Mana: " << character.mana << "\n";
+    std::cout << "Gold: " << character.gold << "\n";
 }
 
 int main()
 {
-    std::string playerName;
-    int playerLevel;
-    int playerHealth;
-    int playerMana;
-    int playerGold;
+    Character player{};
+    
+    Character enemy{
+       "Goblin",
+       3,
+       60,
+       0,
+       25
+    };
+
+
     int damage;
     int round = 1;
+    int enemyDamage = 10;
 
     std::cout << "Enter player name: ";
-    std::cin >> playerName;
+    std::cin >> player.name;
 
     std::cout << "Enter player level: ";
-    std::cin >> playerLevel;
+    std::cin >> player.level;
 
     std::cout << "Enter player health: ";
-    std::cin >> playerHealth;
+    std::cin >> player.health;
 
     std::cout << "Enter player mana: ";
-    std::cin >> playerMana;
+    std::cin >> player.mana;
 
     std::cout << "Enter player gold: ";
-    std::cin >> playerGold;
+    std::cin >> player.gold;
 
     int spellCost = 20;
 
-    if (CanCastSpell(playerMana, spellCost))
+    ShowProfile(player);
+    ShowProfile(enemy);
+
+    if (CanCastSpell(player.mana, spellCost))
     {
         std::cout << "\nMagic: Spell ready\n";
     }
@@ -94,12 +106,12 @@ int main()
 
     std::cout << "Fight!\n";
 
-    while (playerHealth > 0)
+    while (enemy.health > 0 && player.health > 0)
     {
         std::cout << "\n=== Round " << round << " ===\n";
 
         
-        std::cout << "Enter damage: ";
+        std::cout << "Enter damage to "<<enemy.name<<": ";
         std::cin >> damage;
         while (damage <= 0)
         {
@@ -107,22 +119,34 @@ int main()
             std::cin >> damage;
         }
 
-        playerHealth = ApplyDamage(playerHealth, damage);
+        ApplyDamage(enemy, damage);
+        ShowStatus(enemy);
+        std::cout << enemy.name << " health: " << enemy.health << "\n";
 
-        ShowStatus(playerHealth);
+        if(enemy.health > 0){
+            std::cout << enemy.name << " attacks for " << enemyDamage << " damage.\n";
+            ApplyDamage(player, enemyDamage);
+            ShowStatus(player);
+
+        }
         
-        std::cout << "Current health: " << playerHealth << "\n";
+        std::cout << player.name << " health: " << player.health << "\n";
+        
 
         round++;
     }
 
-    ShowProfile(
-        playerName,
-        playerLevel,
-        playerHealth,
-        playerMana,
-        playerGold
-    );
+    if (player.health > 0)
+    {
+        std::cout <<"\n" << player.name << " WINS!\n";
+    }
+    else
+    {
+        std::cout <<"\n" << enemy.name << " WINS!\n";
+    }
 
+    ShowProfile(player);
+    ShowProfile(enemy);
+    
     return 0;
 }
